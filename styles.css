@@ -1,0 +1,283 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: url('https://upload.wikimedia.org/wikipedia/commons/6/66/London_Business_School_facade.jpg') center/cover no-repeat fixed;
+    position: relative;
+    background-size: 100%;
+    background-position: center center;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 100%);
+    z-index: 1;
+    backdrop-filter: contrast(1.1) brightness(1.05);
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 3rem;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    backdrop-filter: blur(3px);
+    max-width: 90%;
+    width: 460px;
+    position: relative;
+    z-index: 2;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    margin: 80px auto 0;
+}
+
+h1 {
+    color: #184E77;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timer {
+    font-size: 6.5rem;
+    font-weight: 700;
+    color: #1A759F;
+    margin: 2rem 0;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -2px;
+    line-height: 1;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: color 0.3s ease;
+}
+
+.timer.running {
+    color: #52B69A;
+}
+
+.timer.warning {
+    color: #e74c3c;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.progress-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    width: 300px;
+    height: 300px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.progress-ring__circle {
+    stroke: #52B69A;
+    stroke-width: 4;
+    fill: none;
+    transition: stroke-dashoffset 0.3s ease;
+    stroke-linecap: round;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.buttons-row {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+button {
+    padding: 0.9rem 1.8rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    min-width: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tagline {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #52B69A;
+    margin-top: 1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Work mode - showing Rest Mode button */
+#modeToggle.work-mode {
+    background-color: #52B69A;
+    color: white;
+    box-shadow: 0 4px 12px rgba(82, 182, 154, 0.2);
+}
+
+#modeToggle.work-mode:hover {
+    background-color: #76C893;
+    transform: translateY(-2px);
+}
+
+/* Rest mode - showing Work Mode button */
+#modeToggle.rest-mode {
+    background-color: #34A0A4;
+    color: white;
+    box-shadow: 0 4px 12px rgba(52, 160, 164, 0.2);
+}
+
+#modeToggle.rest-mode:hover {
+    background-color: #168AAD;
+    transform: translateY(-2px);
+}
+
+#start {
+    background-color: #52B69A;
+    color: white;
+    box-shadow: 0 4px 12px rgba(82, 182, 154, 0.2);
+}
+
+#start:hover {
+    background-color: #76C893;
+    transform: translateY(-2px);
+}
+
+#pause {
+    background-color: #99D98C;
+    color: #184E77;
+    box-shadow: 0 4px 12px rgba(153, 217, 140, 0.2);
+}
+
+#pause:hover {
+    background-color: #B5E48C;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.mode-toggle {
+    margin: 1.25rem 0;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.mode-toggle button {
+    font-size: 0.95rem;
+    padding: 0.75rem 1.25rem;
+    background-color: #F0F7F4;
+    color: #184E77;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.mode-toggle button.active {
+    background-color: #52B69A;
+    color: white;
+    box-shadow: 0 4px 12px rgba(82, 182, 154, 0.2);
+}
+
+.clock-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: rgba(44, 51, 63, 0.85);
+    padding: 10px 20px;
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.clock {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: white;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.lbs-logo {
+    width: 200px;
+    height: auto;
+    object-fit: contain;
+}
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    z-index: 1000;
+    height: auto;
+    min-height: 64px;
+}
+
+.lbs-logo {
+    height: 100px;
+    width: auto;
+    object-fit: contain;
+    max-width: 300px;
+}
+
+.london-time {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #184E77;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+} 
