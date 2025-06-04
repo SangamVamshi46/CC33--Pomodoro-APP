@@ -53,6 +53,8 @@ h1 {
     font-weight: 700;
     letter-spacing: -0.5px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
 }
 
 .timer {
@@ -65,6 +67,7 @@ h1 {
     line-height: 1;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     transition: color 0.3s ease;
+    text-align: center;
 }
 
 .timer.running {
@@ -88,25 +91,6 @@ h1 {
     }
 }
 
-.progress-ring {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-90deg);
-    width: 300px;
-    height: 300px;
-    z-index: -1;
-    pointer-events: none;
-}
-
-.progress-ring__circle {
-    stroke: #52B69A;
-    stroke-width: 4;
-    fill: none;
-    transition: stroke-dashoffset 0.3s ease;
-    stroke-linecap: round;
-}
-
 .controls {
     display: flex;
     flex-direction: column;
@@ -127,7 +111,7 @@ button {
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
     font-weight: 600;
     min-width: 130px;
     display: flex;
@@ -143,6 +127,8 @@ button {
     color: #52B69A;
     margin-top: 1rem;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
 }
 
 /* Work mode - showing Rest Mode button */
@@ -170,25 +156,24 @@ button {
 }
 
 #start {
-    background-color: #52B69A;
+    background-color: #1A759F;
     color: white;
-    box-shadow: 0 4px 12px rgba(82, 182, 154, 0.2);
 }
 
 #start:hover {
-    background-color: #76C893;
-    transform: translateY(-2px);
+    background-color: #1e88e5;
+    border-color: #1e88e5;
 }
 
 #pause {
-    background-color: #99D98C;
-    color: #184E77;
-    box-shadow: 0 4px 12px rgba(153, 217, 140, 0.2);
+    background-color: white;
+    color: #1A759F;
 }
 
 #pause:hover {
-    background-color: #B5E48C;
-    transform: translateY(-2px);
+    background-color: #1A759F;
+    border-color: #1A759F;
+    color: white;
 }
 
 button:active {
@@ -280,4 +265,186 @@ button:active {
     padding: 0.5rem 1rem;
     border-radius: 8px;
     backdrop-filter: blur(4px);
+}
+
+.mode-toggle-wrapper {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 5;
+}
+
+/* Mode toggle icon styles */
+.mode-toggle-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.mode-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    padding: 0;
+    min-width: unset;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.mode-icon.work-mode {
+    color: #f39c12;
+    border-color: #f39c12;
+}
+
+.mode-icon.work-mode:hover {
+    background-color: #f39c12;
+    color: white;
+    transform: rotate(15deg);
+}
+
+.mode-icon.rest-mode {
+    color: #34495e;
+    border-color: #34495e;
+}
+
+.mode-icon.rest-mode:hover {
+    background-color: #34495e;
+    color: white;
+    transform: rotate(-15deg);
+}
+
+.mode-icon i {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+/* Control buttons styles */
+.control-btn {
+    background: white;
+    color: #1A759F;
+    border: 2px solid #1A759F;
+    padding: 0.8rem 2rem;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn:hover {
+    background: #1A759F;
+    color: white;
+}
+
+.control-btn i {
+    font-size: 1rem;
+}
+
+#addTime {
+    background-color: white;
+    color: #1A759F;
+    min-width: 120px;
+}
+
+#addTime:hover {
+    background-color: #1A759F;
+    color: white;
+}
+
+.focus-task {
+    font-size: 1.2rem;
+    color: #1A759F;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    min-height: 2rem;
+    text-align: center;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.focus-task.visible {
+    opacity: 1;
+}
+
+.focus-task i {
+    margin-right: 0.5rem;
+    color: #52B69A;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    transform: translateY(-10%);
+    animation: modalSlideIn 0.3s ease forwards;
+}
+
+@keyframes modalSlideIn {
+    to {
+        transform: translateY(0);
+    }
+}
+
+.modal-content h2 {
+    color: #1A759F;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: #1A759F;
+}
+
+.modal-content button {
+    width: 100%;
+    background: #1A759F;
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+    background: #1e88e5;
 } 

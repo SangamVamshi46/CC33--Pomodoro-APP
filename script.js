@@ -4,53 +4,34 @@ let isWorkMode = false;
 let totalTime;
 let londonOffset = 0;
 let lastApiUpdate = 0;
+let currentFocusTask = '';
 
 const minutesDisplay = document.getElementById('minutes');
 const secondsDisplay = document.getElementById('seconds');
 const startButton = document.getElementById('start');
 const pauseButton = document.getElementById('pause');
+const addTimeButton = document.getElementById('addTime');
 const modeToggleButton = document.getElementById('modeToggle');
 const taglineElement = document.getElementById('tagline');
 const timerDisplay = document.querySelector('.timer');
 const clockDisplay = document.getElementById('clock');
 const londonTimeDisplay = document.getElementById('london-time');
+const focusTaskDisplay = document.getElementById('focusTask');
+const focusModal = document.getElementById('focusModal');
+const focusInput = document.getElementById('focusInput');
+const submitFocusButton = document.getElementById('submitFocus');
 
 const WORK_TIME = 25 * 60; // 25 minutes in seconds
 const REST_TIME = 5 * 60;  // 5 minutes in seconds
 const WARNING_THRESHOLD = 60; // Show warning when 60 seconds remaining
+const EXTRA_TIME = 5 * 60; // 5 minutes in seconds
 
-// Create SVG circle for progress
-const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-svg.setAttribute('class', 'progress-ring');
-svg.setAttribute('width', '300');
-svg.setAttribute('height', '300');
-
-const radius = 145;
-const circumference = radius * 2 * Math.PI;
-
-circle.setAttribute('class', 'progress-ring__circle');
-circle.setAttribute('r', radius);
-circle.setAttribute('cx', '150');
-circle.setAttribute('cy', '150');
-circle.style.strokeDasharray = `${circumference} ${circumference}`;
-circle.style.strokeDashoffset = circumference;
-
-svg.appendChild(circle);
-document.querySelector('.container').appendChild(svg);
-
-function setProgress(percent) {
-    const offset = circumference - (percent / 100 * circumference);
-    circle.style.strokeDashoffset = offset;
-}
-
-// Add function to update document title
 function updateTitle(minutes, seconds) {
+    const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     if (timeLeft === 0) {
-        document.title = "Pomodoro Complete! 🎉";
+        document.title = "Time's Up! 🎉";
     } else {
-        const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        document.title = `${timeString} - Pomodoro Timer`;
+        document.title = `${timeString} - Pomodoro`;
     }
 }
 
@@ -60,12 +41,8 @@ function updateDisplay() {
     minutesDisplay.textContent = minutes.toString().padStart(2, '0');
     secondsDisplay.textContent = seconds.toString().padStart(2, '0');
     
-    // Update title with current time
+    // Update title immediately with the same values
     updateTitle(minutes, seconds);
-    
-    // Update progress circle
-    const progress = ((totalTime - timeLeft) / totalTime) * 100;
-    setProgress(progress);
     
     // Add warning class when time is running out
     if (timeLeft <= WARNING_THRESHOLD) {
@@ -75,12 +52,54 @@ function updateDisplay() {
     }
 }
 
-function startTimer() {
+function showFocusTask(task) {
+    if (task) {
+        focusTaskDisplay.innerHTML = `<i class="fas fa-bullseye"></i>${task}`;
+        focusTaskDisplay.classList.add('visible');
+    } else {
+        focusTaskDisplay.innerHTML = '';
+        focusTaskDisplay.classList.remove('visible');
+    }
+}
+
+function showFocusModal() {
+    focusModal.style.display = 'flex';
+    focusInput.focus();
+    return new Promise((resolve) => {
+        const handleSubmit = () => {
+            const task = focusInput.value.trim();
+            if (task) {
+                focusModal.style.display = 'none';
+                focusInput.value = '';
+                resolve(task);
+            }
+        };
+
+        const handleKeyPress = (e) => {
+            if (e.key === 'Enter') {
+                handleSubmit();
+            }
+        };
+
+        submitFocusButton.onclick = handleSubmit;
+        focusInput.onkeypress = handleKeyPress;
+    });
+}
+
+async function startTimer() {
     if (timerId !== null) return;
+    
+    if (isWorkMode && !currentFocusTask) {
+        const task = await showFocusModal();
+        if (!task) return;
+        currentFocusTask = task;
+        showFocusTask(currentFocusTask);
+    }
     
     timerDisplay.classList.add('running');
     startButton.style.display = 'none';
     pauseButton.style.display = 'inline-block';
+    addTimeButton.style.display = 'inline-block';
     
     timerId = setInterval(() => {
         timeLeft--;
@@ -92,13 +111,12 @@ function startTimer() {
             timerDisplay.classList.remove('running');
             startButton.style.display = 'inline-block';
             pauseButton.style.display = 'none';
+            addTimeButton.style.display = 'none';
             
-            // Play notification sound
             const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
             audio.play();
             
-            // Update title for completion
-            document.title = "Pomodoro Complete! 🎉";
+            document.title = "Time's Up! 🎉";
             
             alert(isWorkMode ? 'Work time is over! Take a break!' : 'Break time is over! Back to work!');
             toggleMode();
@@ -112,11 +130,18 @@ function pauseTimer() {
     timerDisplay.classList.remove('running');
     startButton.style.display = 'inline-block';
     pauseButton.style.display = 'none';
+    addTimeButton.style.display = 'none';
     
-    // Update title to show paused state
+    // Update title immediately when paused
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
     updateTitle(minutes, seconds);
+}
+
+function addFiveMinutes() {
+    timeLeft += EXTRA_TIME;
+    totalTime += EXTRA_TIME;
+    updateDisplay();
 }
 
 function toggleMode() {
@@ -131,19 +156,20 @@ function toggleMode() {
     const seconds = timeLeft % 60;
     updateTitle(minutes, seconds);
     
-    // Update progress circle color
-    circle.style.stroke = isWorkMode ? '#52B69A' : '#34A0A4';
-    
-    // Update button text and style
-    modeToggleButton.textContent = isWorkMode ? 'Rest Mode' : 'Work Mode';
+    // Update icon and style
+    const icon = modeToggleButton.querySelector('i');
     if (isWorkMode) {
         modeToggleButton.classList.add('work-mode');
         modeToggleButton.classList.remove('rest-mode');
+        icon.className = 'fas fa-sun';
         taglineElement.textContent = 'Time To Focus!';
+        currentFocusTask = ''; // Reset focus task when switching to work mode
     } else {
         modeToggleButton.classList.add('rest-mode');
         modeToggleButton.classList.remove('work-mode');
+        icon.className = 'fas fa-moon';
         taglineElement.textContent = 'Time To Relax!';
+        showFocusTask(''); // Hide focus task during rest mode
     }
 }
 
@@ -202,8 +228,10 @@ toggleMode();
 
 // Hide pause button initially
 pauseButton.style.display = 'none';
+addTimeButton.style.display = 'none';
 
 // Event listeners
 startButton.addEventListener('click', startTimer);
 pauseButton.addEventListener('click', pauseTimer);
+addTimeButton.addEventListener('click', addFiveMinutes);
 modeToggleButton.addEventListener('click', toggleMode); 

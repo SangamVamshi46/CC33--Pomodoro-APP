@@ -5,8 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Timer</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div class="modal-overlay" id="focusModal">
+        <div class="modal-content">
+            <h2>What are you focusing on?</h2>
+            <input type="text" id="focusInput" placeholder="Enter your focus task...">
+            <button id="submitFocus" class="control-btn">Start Focus Session</button>
+        </div>
+    </div>
     <div class="top-bar">
         <img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/London_Business_School_logo.svg" 
              alt="London Business School" 
@@ -14,15 +22,29 @@
         <div id="london-time" class="london-time">London Time: --:--:--</div>
     </div>
     <div class="container">
+        <div class="mode-toggle-container">
+            <button id="modeToggle" class="mode-icon work-mode" aria-label="Toggle Work/Rest Mode">
+                <i class="fas fa-sun"></i>
+            </button>
+        </div>
         <h1>Pomodoro Timer</h1>
         <div class="timer">
             <span id="minutes">25</span>:<span id="seconds">00</span>
         </div>
+        <div id="focusTask" class="focus-task"></div>
         <div class="controls">
             <div class="buttons-row">
-                <button id="start">Start</button>
-                <button id="pause">Pause</button>
-                <button id="modeToggle" class="mode-btn">Rest Mode</button>
+                <button id="start" class="control-btn">
+                    <i class="fas fa-play"></i>
+                    <span>Start</span>
+                </button>
+                <button id="pause" class="control-btn">
+                    <i class="fas fa-pause"></i>
+                    <span>Pause</span>
+                </button>
+                <button id="addTime" class="control-btn" style="display: none;">
+                    <span>+5 Min</span>
+                </button>
             </div>
             <div id="tagline" class="tagline">Time To Focus!</div>
         </div>
