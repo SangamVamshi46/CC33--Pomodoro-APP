@@ -218,10 +218,9 @@ button:active {
     position: absolute;
     top: 10px;
     left: 10px;
-    height: auto;
-    width: auto;
-    max-height: 55px;
-    max-width: 130px;
+    height: 100px;
+    width: 100px;
+    aspect-ratio: 1/1;
     object-fit: contain;
     z-index: 1001;
 }
@@ -464,8 +463,8 @@ button:active {
     .lbs-logo {
         top: 8px;
         left: 8px;
-        max-height: 45px;
-        max-width: 115px;
+        height: 80px;
+        width: 80px;
     }
 
     .timer {
@@ -548,8 +547,8 @@ button:active {
     .lbs-logo {
         top: 6px;
         left: 6px;
-        max-height: 40px;
-        max-width: 100px;
+        height: 60px;
+        width: 60px;
     }
 
     body {
